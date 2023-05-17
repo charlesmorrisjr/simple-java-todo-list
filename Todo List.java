@@ -9,7 +9,8 @@ class TodoListProgram {
   public static void addTask() {
     System.out.println("Enter name of new task: ");
     
-    String taskName = input.next();
+    // input.nextLine();
+    String taskName = input.nextLine().trim();
     
     todoList.add(new TodoTask(taskName));
   }
@@ -17,43 +18,36 @@ class TodoListProgram {
   public static void checkTask() {
     System.out.println("Enter number of task to check/uncheck. Enter 0 to return to main screen.");
 
-    while (true) {
-      if (input.hasNextInt()) {
-        int taskNum = input.nextInt();
-
-        if (taskNum > 0 && taskNum <= todoList.size()) {
-          todoList.get(taskNum - 1).checkOrUncheck();
-          break;
-        } else if (taskNum == 0) {
-          break;
-        } else {
-          System.out.println("Invalid choice. Please try again.");
-        }
-      } else {
-        System.out.println("Invalid choice. Please try again.");
-        input.next();
-      }
+    int taskNum = getTaskNumInput();
+    
+    if (taskNum > 0) {
+      todoList.get(taskNum - 1).checkOrUncheck();
     }
   }
 
   public static void removeTask() {
     System.out.println("Enter number of task to remove. Enter 0 to return to main screen.");
 
-    while (true) {
-      if (input.hasNextInt()) {
-        int taskNum = input.nextInt();
+    int taskNum = getTaskNumInput();
+    
+    if (taskNum > 0) {
+      todoList.remove(taskNum - 1);
+    }
+  }
 
-        if (taskNum > 0 && taskNum <= todoList.size()) {
-          todoList.remove(taskNum - 1);
-          break;
-        } else if (taskNum == 0) {
-          break;
+  public static int getTaskNumInput() {
+    while (true) {
+      try {
+        int taskNum = Integer.parseInt(input.nextLine());
+
+        if (taskNum >= 0 && taskNum <= todoList.size()) {
+          return taskNum;
         } else {
           System.out.println("Invalid choice. Please try again.");
         }
-      } else {
+      } catch (Exception ex) {
         System.out.println("Invalid choice. Please try again.");
-        input.next();
+        input.reset();
       }
     }
   }
@@ -62,7 +56,7 @@ class TodoListProgram {
     System.out.println("");
 
     for (int i = 0; i < todoList.size(); i++) {
-      System.out.println((i + 1) + ". [" + todoList.get(i).getCheckMark() + "] " + todoList.get(i).displayTaskName());
+      System.out.println((i + 1) + ". [" + todoList.get(i).getCheckMark() + "] " + todoList.get(i).getTaskName());
     }
 
     System.out.println("");
@@ -72,24 +66,29 @@ class TodoListProgram {
     
     boolean userExit = false;
     
-    todoList.add(new TodoTask("Wake up"));
     todoList.add(new TodoTask("Meditate"));
+    todoList.add(new TodoTask("Exercise"));
+    todoList.add(new TodoTask("Wash car"));
+    todoList.add(new TodoTask("Practice guitar"));
+    todoList.add(new TodoTask("Grocery shopping"));
     
-    while (!userExit) {
-      if (todoList.size() == 0) {
-        System.out.println("\nNo items on the to-do list!");
-        System.out.println("\n1. Add task");
-      } else {
+    do {
+      System.out.println("To-Do List");
+
+      if (todoList.size() > 0) {
         displayTodoList();
         System.out.println("1. Add task, 2. Check/uncheck task, 3. Remove task");
+        System.out.println("Enter the number '1', '2', or '3'; or type 'exit' to close the app.\n");
+      } else {
+        System.out.println("\nNo items on the to-do list!");
+        System.out.println("\n1. Add task");
+        System.out.println("Enter the number '1' or type 'exit' to close the app.\n");
       }
-
-      System.out.println("or type 'exit' to close the app.\n");
 
       while (true) {
         System.out.println("Select an option: ");
 
-        String userInput = input.next();
+        String userInput = input.nextLine().trim();
 
         if (userInput.equals("1")) {
           addTask();
@@ -107,7 +106,7 @@ class TodoListProgram {
           System.out.println("Invalid choice. Please try again.");
         }
       }
-    }
+    } while (!userExit);
 
     input.close();
 

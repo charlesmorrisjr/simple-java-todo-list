@@ -15,7 +15,7 @@ public class TodoTask {
     return this.checked ? "X" : " ";
   }
 
-  public String displayTaskName() {
+  public String getTaskName() {
     return this.taskName;
   }
 }
